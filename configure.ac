@@ -1,15 +1,56 @@
-dnl Process this file with autoconf to produce a configure script
+## configure.ac
+## Written by Gary V. Vaughan, 2012
 
-AC_INIT(lcurses, 8, rrt@sc3d.org)
+## Copyright (c) 2012-2015 Gary V. Vaughan
+
+## This file is part of lcurses.
+## See README for license.
+## ------------------------------------------------------------------------
+
+AC_INIT([lcurses], [8], [http://github.com/lcurses/lcurses/issues])
 AC_CONFIG_AUX_DIR([build-aux])
+AC_CONFIG_MACRO_DIR([m4])
 
-AM_INIT_AUTOMAKE([-Wall -Werror std-options])
+AS_BOX([Configuring AC_PACKAGE_TARNAME AC_PACKAGE_VERSION])
+echo
 
+AM_INIT_AUTOMAKE([-Wall subdir-objects])
 m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES([yes])])
 
-dnl Check for programs
+## Check for programs
 AC_PROG_CC
 gl_EARLY
+AC_PROG_MKDIR_P
+AC_PROG_EGREP
+AC_PROG_SED
+
+
+## ------------------------------------------------------------------------
+## Compiler flags for POSIX 2008 or better compliance.
+## ------------------------------------------------------------------------
+
+AC_USE_SYSTEM_EXTENSIONS
+AC_CANONICAL_HOST
+case $host_os in
+  *nto*|*qnx*)
+    # QNX is only POSIX 2001, but _XOPEN_SOURCE turns off other
+    # functions luaposix can bind.
+    AC_SUBST([POSIX_EXTRA_CPPFLAGS], [-DLPOSIX_2001_COMPLIANT])
+    ;;
+
+  darwin*|openbsd*)
+    # Setting _XOPEN_SOURCE here messes up header declarations, but
+    # all functions luaposix can bind are available without it.
+    AC_SUBST([POSIX_EXTRA_CPPFLAGS], [-DLPOSIX_2008_COMPLIANT])
+    ;;
+
+  *)
+    # Enable POSIX 2008.  Please send a $host_os match if your host
+    # is not compliant.
+    AC_SUBST([POSIX_EXTRA_CPPFLAGS], [-D_XOPEN_SOURCE=700])
+    ;;
+esac
+
 
 AC_ARG_ENABLE([gcc-warnings],
   [AS_HELP_STRING([--enable-gcc-warnings],
@@ -27,14 +68,13 @@ if test "$gl_gcc_warnings" = yes; then
 
   # Set up the list of undesired warnings.
   nw=
-  nw="$nw -Wsystem-headers"   # Don’t let system headers trigger warnings
+  nw="$nw -Wsystem-headers"   # Don't let system headers trigger warnings
   nw="$nw -Wundef"            # All compiler preprocessors support #if UNDEF
   nw="$nw -Wtraditional"      # All compilers nowadays support ANSI C
   nw="$nw -Wstrict-overflow"  # Use a lower level (see below).
-  nw="$nw -Wconversion"       # These warnings usually don’t point to mistakes.
+  nw="$nw -Wconversion"       # These warnings usually don't point to mistakes.
   nw="$nw -Wsign-conversion"  # Likewise.
   nw="$nw -Waggregate-return" # We do this on purpose.
-  nw="$nw -Wbad-function-cast" # FIXME: We do this on purpose (non-pointer list elements).
   nw="$nw -Wtraditional-conversion" # Don't care.
   nw="$nw -Wpadded"           # Don't care.
   nw="$nw -Wc++-compat"       # Don't care.
@@ -58,12 +98,12 @@ if test "$gl_gcc_warnings" = yes; then
   gl_WARN_ADD([-fmudflap])
 fi
 
-LT_PREREQ([2.2.6])
-LT_INIT
-LT_OUTPUT
+## required by automake 1.12.x, not available in 1.10.x
+m4_ifdef([AM_PROG_AR], [AM_PROG_AR])
 
-eval `./libtool --config |grep '^objdir='`
-eval `./libtool --config |grep '^shrext_cmds='`
+LT_PREREQ([2.2.6])
+LT_INIT([disable-static])
+
 module=yes eval shrext=$shrext_cmds
 
 AC_SUBST([objdir])
@@ -72,40 +112,31 @@ AC_SUBST(LIBTOOL_DEPS)
 
 gl_INIT
 
-dnl Check for header files
+## Check for header files
 AC_HEADER_STDC
 
-AC_CHECK_FUNCS([strlcpy])
-
-dnl Curses
+## Curses
 AX_WITH_CURSES
-if test "$ax_cv_curses" != "yes"; then
-  AC_MSG_ERROR([cannot find curses])
-fi
 AC_ARG_VAR(CURSES_LIB, [linker flags for curses library])
 
-dnl Lua 5.1
-AX_PROG_LUA(501)
+save_LIBS=$LIBS
+LIBS="$CURSES_LIB $LIBS"
+AC_CHECK_FUNCS([resizeterm])
+LIBS=$save_LIBS
+
+## Use system implementation, or bundled replacement?
+AC_CHECK_FUNCS([strlcpy])
+
+## Lua
+AX_PROG_LUA(5.1, 5.4)
 AX_LUA_HEADERS
-AX_LUA_HEADERS_VERSION(501)
-AC_SUBST(LUA)
-AC_SUBST(LUA_INCLUDE)
+AC_PATH_PROG([SPECL], [specl], [:])
 
-dnl Lua libraries
-dnl FIXME: Parametrize on version
-lualibdir='${libdir}/lua/5.1'
-AC_SUBST(lualibdir)
-luadatadir='${datadir}/lua/5.1'
-AC_SUBST(luadatadir)
+## ldoc
+AC_PATH_PROG([LDOC], [ldoc], [false])
+AM_CONDITIONAL([HAVE_LDOC], [test false != "$LDOC"])
 
-dnl Perl
-AX_WITH_PROG([PERL], [perl])
-if test -z "$PERL"; then
-  AC_MSG_FAILURE([cannot find perl])
-fi
-
-dnl Generate output files
-AC_CONFIG_MACRO_DIR(m4)
+## Generate output files
 AC_CONFIG_HEADER(config.h)
-AC_CONFIG_FILES(Makefile)
+AC_CONFIG_FILES([Makefile build-aux/config.ld])
 AC_OUTPUT
