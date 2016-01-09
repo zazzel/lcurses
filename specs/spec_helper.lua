@@ -13,20 +13,17 @@ if os.getenv "installcheck" == nil then
 		    top_srcdir .. "/lib/?/init.lua",
 		    package.path)
   package.cpath = std.package.normalize (
-		    top_builddir .. "/ext/posix/.libs/?.so",
-		    top_srcdir .. "/ext/posix/.libs/?.so",
-		    top_builddir .. "/ext/posix/_libs/?.dll",
-		    top_srcdir .. "/ext/posix/_libs/?.dll",
+		    top_builddir .. "/ext/.libs/?.so",
+		    top_srcdir .. "/ext/.libs/?.so",
+		    top_builddir .. "/ext/_libs/?.dll",
+		    top_srcdir .. "/ext/_libs/?.dll",
 		    package.cpath)
 end
 
 
-local bit = require "bit32"
-band, bnot, bor = bit.band, bit.bnot, bit.bor
-
 badargs = require "specl.badargs"
 hell    = require "specl.shell"
-posix   = require "posix"
+curses  = require "curses"
 
 
 -- Allow user override of LUA binary used by hell.spawn, falling
@@ -75,35 +72,12 @@ function luaproc (code, arg, stdin)
 end
 
 
--- Use a consistent template for all temporary files.
-TMPDIR = posix.getenv ("TMPDIR") or "/tmp"
-template = TMPDIR .. "/luaposix-test-XXXXXX"
-
 -- Allow comparison against the error message of a function call result.
 function Emsg (_, msg) return msg or "" end
 
 -- Collect stdout from a shell command, and strip surrounding whitespace.
 function cmd_output (cmd)
   return hell.spawn (cmd).output:gsub ("^%s+", ""):gsub ("%s+$", "")
-end
-
-
-local st = require "posix.sys.stat"
-local stat, S_ISDIR = st.lstat, st.S_ISDIR
-
--- Recursively remove a temporary directory.
-function rmtmp (dir)
-  for f in posix.files (dir) do
-    if f ~= "." and f ~= ".." then
-      local path = dir .. "/" .. f
-      if S_ISDIR (stat (path).st_mode) ~= 0 then
-        rmtmp (path)
-      else
-        os.remove (path)
-      end
-    end
-  end
-  os.remove (dir)
 end
 
 

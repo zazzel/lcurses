@@ -1,7 +1,7 @@
 # Local Make rules.
 # Written by Gary V. Vaughan, 2013
 
-# Copyright (C) 2013-2015 Gary V. Vaughan
+# Copyright (C) 2013-2016 Gary V. Vaughan
 
 # This file is part of lcurses.
 # See README for license.
@@ -59,17 +59,17 @@ dist_lua_DATA +=			\
 	lib/curses.lua			\
 	$(NOTHING_ELSE)
 
-luaexec_LTLIBRARIES += ext/curses.la
+luaexec_LTLIBRARIES += ext/curses_c.la
 
-ext_curses_la_SOURCES =			\
+ext_curses_c_la_SOURCES =		\
 	ext/curses.c			\
 	$(NOTHING_ELSE)
-EXTRA_ext_curses_la_SOURCES =		\
+EXTRA_ext_curses_c_la_SOURCES =		\
 	ext/curses/chstr.c		\
 	ext/curses/window.c		\
 	$(NOTHING_ELSE)
 
-ext_curses_la_LDFLAGS = $(AM_LDFLAGS) $(CURSES_LIB)
+ext_curses_c_la_LDFLAGS = $(AM_LDFLAGS) $(CURSES_LIB)
 
 
 ## -------------- ##

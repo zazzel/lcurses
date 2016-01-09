@@ -153,7 +153,7 @@
 #
 #   Copyright (c) 2009 Mark Pulford <mark@kyne.com.au>
 #   Copyright (c) 2009 Damian Pietras <daper@daper.net>
-#   Copyright (c) 2012 Reuben Thomas <rrt@sc3d.org>
+#   Copyright (c) 2012, 2016 Reuben Thomas <rrt@sc3d.org>
 #   Copyright (c) 2011 John Zaitseff <J.Zaitseff@zap.org.au>
 #
 #   This program is free software: you can redistribute it and/or modify it

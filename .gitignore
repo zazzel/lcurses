@@ -12,7 +12,6 @@
 /.autom4te.cfg
 /.gitmodules
 /ChangeLog
-/COPYING
 /doc
 /GNUmakefile
 /INSTALL
@@ -29,11 +28,10 @@
 /config.lt
 /config.status
 /configure
-/lib/posix/init.lua
 /libtool
-/luaposix-*.rockspec
-!/luaposix-git-*.rockspec
-/luaposix-*.tar.gz
+/lcurses-*.rockspec
+!/lcurses-git-*.rockspec
+/lcurses-*.tar.gz
 /stamp-h1
 /TAGS
 /travis.yml.in
