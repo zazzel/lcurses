@@ -7,7 +7,7 @@
 ## See README for license.
 ## ------------------------------------------------------------------------
 
-AC_INIT([lcurses], [8], [http://github.com/lcurses/lcurses/issues])
+AC_INIT([lcurses], [9.0.0], [http://github.com/lcurses/lcurses/issues])
 AC_CONFIG_AUX_DIR([build-aux])
 AC_CONFIG_MACRO_DIR([m4])
 
