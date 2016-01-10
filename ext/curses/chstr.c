@@ -42,8 +42,6 @@ and attributes in `chstr` buffers are not defined until **after**
 
 #include <config.h>
 
-#if HAVE_CURSES
-
 #include "_helpers.c"
 
 
@@ -250,18 +248,15 @@ C__call(lua_State *L)
 	memset(ncs->str, ' ', len * sizeof(chtype));
 	return 1;
 }
-#endif /*!HAVE_CURSES*/
 
 
 static const luaL_Reg curses_chstr_fns[] =
 {
-#if HAVE_CURSES
-	LPOSIX_FUNC( Clen		),
-	LPOSIX_FUNC( Cset_ch		),
-	LPOSIX_FUNC( Cset_str		),
-	LPOSIX_FUNC( Cget		),
-	LPOSIX_FUNC( Cdup		),
-#endif
+	LCURSES_FUNC( Clen		),
+	LCURSES_FUNC( Cset_ch		),
+	LCURSES_FUNC( Cset_str		),
+	LCURSES_FUNC( Cget		),
+	LCURSES_FUNC( Cdup		),
 	{ NULL, NULL }
 };
 
@@ -275,7 +270,6 @@ luaopen_curses_chstr(lua_State *L)
 	luaL_register(L, "curses.chstr", curses_chstr_fns);
 	t = lua_gettop(L);
 
-#if HAVE_CURSES
 	lua_createtable(L, 0, 1);		/* u = {} */
 	lua_pushcfunction(L, C__call);
 	lua_setfield(L, -2, "__call");		/* u.__call = C__call */
@@ -286,15 +280,14 @@ luaopen_curses_chstr(lua_State *L)
 
 	lua_pushvalue(L, mt);
 	lua_setfield(L, -2, "__index");		/* mt.__index = mt */
-	lua_pushliteral(L, "PosixChstr");
-	lua_setfield(L, -2, "_type");		/* mt._type = "PosixChstr" */
+	lua_pushliteral(L, "CursesChstr");
+	lua_setfield(L, -2, "_type");		/* mt._type = "CursesChstr" */
 
 	/* for k,v in pairs(t) do mt[k]=v end */
 	for (lua_pushnil(L); lua_next(L, t) != 0;)
 		lua_setfield(L, mt, lua_tostring(L, -2));
 
 	lua_pop(L, 1);				/* pop mt */
-#endif
 
 	/* t.version = "curses.chstr..." */
 	lua_pushliteral(L, "curses.chstr for " LUA_VERSION " / " PACKAGE_STRING);

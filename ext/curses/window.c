@@ -38,8 +38,6 @@
 
 #include <config.h>
 
-#if HAVE_CURSES
-
 #include "_helpers.c"
 
 #include "curses/chstr.c"
@@ -269,7 +267,7 @@ static int
 Wsyncok(lua_State *L)
 {
 	WINDOW *w = checkwin(L, 1);
-#if LPOSIX_CURSES_COMPLIANT
+#if LCURSES_POSIX_COMPLIANT
 	int bf = lua_toboolean(L, 2);
 	return pushokresult(syncok(w, bf));
 #else
@@ -1130,7 +1128,7 @@ static int
 Wimmedok(lua_State *L)
 {
 	WINDOW *w = checkwin(L, 1);
-#if LPOSIX_CURSES_COMPLIANT
+#if LCURSES_POSIX_COMPLIANT
 	int bf = lua_toboolean(L, 2);
 	immedok(w, bf);
 	return 0;
@@ -1809,106 +1807,103 @@ Wstandout(lua_State *L)
 {
 	return pushokresult(wstandout(checkwin(L, 1)));
 }
-#endif /*!HAVE_CURSES*/
 
 
 static const luaL_Reg curses_window_fns[] =
 {
-#if HAVE_CURSES
-	LPOSIX_FUNC( W__tostring	),
-	LPOSIX_FUNC( Waddch		),
-	LPOSIX_FUNC( Waddchstr		),
-	LPOSIX_FUNC( Waddstr		),
-	LPOSIX_FUNC( Wattroff		),
-	LPOSIX_FUNC( Wattron		),
-	LPOSIX_FUNC( Wattrset		),
-	LPOSIX_FUNC( Wborder		),
-	LPOSIX_FUNC( Wbox		),
-	LPOSIX_FUNC( Wclear		),
-	LPOSIX_FUNC( Wclearok		),
-	LPOSIX_FUNC( Wclone		),
-	LPOSIX_FUNC( Wclose		),
-	LPOSIX_FUNC( Wclrtobot		),
-	LPOSIX_FUNC( Wclrtoeol		),
-	LPOSIX_FUNC( Wcopywin		),
-	LPOSIX_FUNC( Wcursyncup		),
-	LPOSIX_FUNC( Wdelch		),
-	LPOSIX_FUNC( Wdeleteln		),
-	LPOSIX_FUNC( Wderive		),
-	LPOSIX_FUNC( Wechoch		),
-	LPOSIX_FUNC( Werase		),
-	LPOSIX_FUNC( Wgetbegyx		),
-	LPOSIX_FUNC( Wgetbkgd		),
-	LPOSIX_FUNC( Wgetch		),
-	LPOSIX_FUNC( Wgetmaxyx		),
-	LPOSIX_FUNC( Wgetparyx		),
-	LPOSIX_FUNC( Wgetstr		),
-	LPOSIX_FUNC( Wgetyx		),
-	LPOSIX_FUNC( Whline		),
-	LPOSIX_FUNC( Widcok		),
-	LPOSIX_FUNC( Widlok		),
-	LPOSIX_FUNC( Wimmedok		),
-	LPOSIX_FUNC( Winsertln		),
-	LPOSIX_FUNC( Wintrflush		),
-	LPOSIX_FUNC( Wis_linetouched	),
-	LPOSIX_FUNC( Wis_wintouched	),
-	LPOSIX_FUNC( Wkeypad		),
-	LPOSIX_FUNC( Wleaveok		),
-	LPOSIX_FUNC( Wmeta		),
-	LPOSIX_FUNC( Wmove		),
-	LPOSIX_FUNC( Wmove_derived	),
-	LPOSIX_FUNC( Wmove_window	),
-	LPOSIX_FUNC( Wmvaddch		),
-	LPOSIX_FUNC( Wmvaddchstr	),
-	LPOSIX_FUNC( Wmvaddstr		),
-	LPOSIX_FUNC( Wmvdelch		),
-	LPOSIX_FUNC( Wmvgetch		),
-	LPOSIX_FUNC( Wmvgetstr		),
-	LPOSIX_FUNC( Wmvhline		),
-	LPOSIX_FUNC( Wmvvline		),
-	LPOSIX_FUNC( Wmvwinch		),
-	LPOSIX_FUNC( Wmvwinchnstr	),
-	LPOSIX_FUNC( Wmvwinnstr		),
-	LPOSIX_FUNC( Wmvwinsch		),
-	LPOSIX_FUNC( Wmvwinsnstr	),
-	LPOSIX_FUNC( Wmvwinsstr		),
-	LPOSIX_FUNC( Wnodelay		),
-	LPOSIX_FUNC( Wnotimeout		),
-	LPOSIX_FUNC( Wnoutrefresh	),
-	LPOSIX_FUNC( Woverlay		),
-	LPOSIX_FUNC( Woverwrite		),
-	LPOSIX_FUNC( Wpechochar		),
-	LPOSIX_FUNC( Wpnoutrefresh	),
-	LPOSIX_FUNC( Wprefresh		),
-	LPOSIX_FUNC( Wredrawln		),
-	LPOSIX_FUNC( Wredrawwin		),
-	LPOSIX_FUNC( Wrefresh		),
-	LPOSIX_FUNC( Wresize		),
-	LPOSIX_FUNC( Wscrl		),
-	LPOSIX_FUNC( Wscrollok		),
-	LPOSIX_FUNC( Wstandend		),
-	LPOSIX_FUNC( Wstandout		),
-	LPOSIX_FUNC( Wsub		),
-	LPOSIX_FUNC( Wsubpad		),
-	LPOSIX_FUNC( Wsyncdown		),
-	LPOSIX_FUNC( Wsyncok		),
-	LPOSIX_FUNC( Wsyncup		),
-	LPOSIX_FUNC( Wtimeout		),
-	LPOSIX_FUNC( Wtouch		),
-	LPOSIX_FUNC( Wtouchline		),
-	LPOSIX_FUNC( Wvline		),
-	LPOSIX_FUNC( Wwbkgd		),
-	LPOSIX_FUNC( Wwbkgdset		),
-	LPOSIX_FUNC( Wwinch		),
-	LPOSIX_FUNC( Wwinchnstr		),
-	LPOSIX_FUNC( Wwinnstr		),
-	LPOSIX_FUNC( Wwinsch		),
-	LPOSIX_FUNC( Wwinsdelln		),
-	LPOSIX_FUNC( Wwinsnstr		),
-	LPOSIX_FUNC( Wwinsstr		),
-	LPOSIX_FUNC( Wwsetscrreg	),
+	LCURSES_FUNC( W__tostring	),
+	LCURSES_FUNC( Waddch		),
+	LCURSES_FUNC( Waddchstr		),
+	LCURSES_FUNC( Waddstr		),
+	LCURSES_FUNC( Wattroff		),
+	LCURSES_FUNC( Wattron		),
+	LCURSES_FUNC( Wattrset		),
+	LCURSES_FUNC( Wborder		),
+	LCURSES_FUNC( Wbox		),
+	LCURSES_FUNC( Wclear		),
+	LCURSES_FUNC( Wclearok		),
+	LCURSES_FUNC( Wclone		),
+	LCURSES_FUNC( Wclose		),
+	LCURSES_FUNC( Wclrtobot		),
+	LCURSES_FUNC( Wclrtoeol		),
+	LCURSES_FUNC( Wcopywin		),
+	LCURSES_FUNC( Wcursyncup	),
+	LCURSES_FUNC( Wdelch		),
+	LCURSES_FUNC( Wdeleteln		),
+	LCURSES_FUNC( Wderive		),
+	LCURSES_FUNC( Wechoch		),
+	LCURSES_FUNC( Werase		),
+	LCURSES_FUNC( Wgetbegyx		),
+	LCURSES_FUNC( Wgetbkgd		),
+	LCURSES_FUNC( Wgetch		),
+	LCURSES_FUNC( Wgetmaxyx		),
+	LCURSES_FUNC( Wgetparyx		),
+	LCURSES_FUNC( Wgetstr		),
+	LCURSES_FUNC( Wgetyx		),
+	LCURSES_FUNC( Whline		),
+	LCURSES_FUNC( Widcok		),
+	LCURSES_FUNC( Widlok		),
+	LCURSES_FUNC( Wimmedok		),
+	LCURSES_FUNC( Winsertln		),
+	LCURSES_FUNC( Wintrflush	),
+	LCURSES_FUNC( Wis_linetouched	),
+	LCURSES_FUNC( Wis_wintouched	),
+	LCURSES_FUNC( Wkeypad		),
+	LCURSES_FUNC( Wleaveok		),
+	LCURSES_FUNC( Wmeta		),
+	LCURSES_FUNC( Wmove		),
+	LCURSES_FUNC( Wmove_derived	),
+	LCURSES_FUNC( Wmove_window	),
+	LCURSES_FUNC( Wmvaddch		),
+	LCURSES_FUNC( Wmvaddchstr	),
+	LCURSES_FUNC( Wmvaddstr		),
+	LCURSES_FUNC( Wmvdelch		),
+	LCURSES_FUNC( Wmvgetch		),
+	LCURSES_FUNC( Wmvgetstr		),
+	LCURSES_FUNC( Wmvhline		),
+	LCURSES_FUNC( Wmvvline		),
+	LCURSES_FUNC( Wmvwinch		),
+	LCURSES_FUNC( Wmvwinchnstr	),
+	LCURSES_FUNC( Wmvwinnstr	),
+	LCURSES_FUNC( Wmvwinsch		),
+	LCURSES_FUNC( Wmvwinsnstr	),
+	LCURSES_FUNC( Wmvwinsstr	),
+	LCURSES_FUNC( Wnodelay		),
+	LCURSES_FUNC( Wnotimeout	),
+	LCURSES_FUNC( Wnoutrefresh	),
+	LCURSES_FUNC( Woverlay		),
+	LCURSES_FUNC( Woverwrite	),
+	LCURSES_FUNC( Wpechochar	),
+	LCURSES_FUNC( Wpnoutrefresh	),
+	LCURSES_FUNC( Wprefresh		),
+	LCURSES_FUNC( Wredrawln		),
+	LCURSES_FUNC( Wredrawwin	),
+	LCURSES_FUNC( Wrefresh		),
+	LCURSES_FUNC( Wresize		),
+	LCURSES_FUNC( Wscrl		),
+	LCURSES_FUNC( Wscrollok		),
+	LCURSES_FUNC( Wstandend		),
+	LCURSES_FUNC( Wstandout		),
+	LCURSES_FUNC( Wsub		),
+	LCURSES_FUNC( Wsubpad		),
+	LCURSES_FUNC( Wsyncdown		),
+	LCURSES_FUNC( Wsyncok		),
+	LCURSES_FUNC( Wsyncup		),
+	LCURSES_FUNC( Wtimeout		),
+	LCURSES_FUNC( Wtouch		),
+	LCURSES_FUNC( Wtouchline	),
+	LCURSES_FUNC( Wvline		),
+	LCURSES_FUNC( Wwbkgd		),
+	LCURSES_FUNC( Wwbkgdset		),
+	LCURSES_FUNC( Wwinch		),
+	LCURSES_FUNC( Wwinchnstr	),
+	LCURSES_FUNC( Wwinnstr		),
+	LCURSES_FUNC( Wwinsch		),
+	LCURSES_FUNC( Wwinsdelln	),
+	LCURSES_FUNC( Wwinsnstr		),
+	LCURSES_FUNC( Wwinsstr		),
+	LCURSES_FUNC( Wwsetscrreg	),
 	{"__gc",     Wclose		}, /* rough safety net */
-#endif
 	{NULL, NULL}
 };
 
@@ -1921,13 +1916,12 @@ luaopen_curses_window(lua_State *L)
 	luaL_register(L, "curses.window", curses_window_fns);
 	t = lua_gettop(L);
 
-#if HAVE_CURSES
 	luaL_newmetatable(L, WINDOWMETA);
 	mt = lua_gettop(L);
 
 	lua_pushvalue(L, mt);
 	lua_setfield(L, mt, "__index");		/* mt.__index = mt */
-	lua_pushliteral(L, "PosixWindow");
+	lua_pushliteral(L, "CursesWindow");
 	lua_setfield(L, mt, "_type");		/* mt._type = "Curses Window" */
 
 	/* for k,v in pairs(t) do mt[k]=v end */
@@ -1935,7 +1929,6 @@ luaopen_curses_window(lua_State *L)
 		lua_setfield(L, mt, lua_tostring(L, -2));
 
 	lua_pop(L, 1);				/* pop mt */
-#endif
 
 	/* t.version = "curses.window..." */
 	lua_pushliteral(L, "curses.window for " LUA_VERSION " / " PACKAGE_STRING);

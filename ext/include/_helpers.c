@@ -10,8 +10,8 @@
  * With documentation from Steve Donovan 2012
  */
 
-#ifndef LUAPOSIX__HELPERS_C
-#define LUAPOSIX__HELPERS_C 1
+#ifndef LCURSES__HELPERS_C
+#define LCURSES__HELPERS_C 1
 
 #include <config.h>
 
@@ -23,37 +23,23 @@
 #include <sys/stat.h>
 #include <unistd.h>		/* for _POSIX_VERSION */
 
-#if HAVE_CURSES
-# if HAVE_NCURSESW_CURSES_H
-#    include <ncursesw/curses.h>
-# elif HAVE_NCURSESW_H
-#    include <ncursesw.h>
-# elif HAVE_NCURSES_CURSES_H
-#    include <ncurses/curses.h>
-# elif HAVE_NCURSES_H
-#    include <ncurses.h>
-# elif HAVE_CURSES_H
-#    include <curses.h>
-# endif
+#if HAVE_NCURSESW_CURSES_H
+#  include <ncursesw/curses.h>
+#elif HAVE_NCURSESW_H
+#  include <ncursesw.h>
+#elif HAVE_NCURSES_CURSES_H
+#  include <ncurses/curses.h>
+#elif HAVE_NCURSES_H
+#  include <ncurses.h>
+#elif HAVE_CURSES_H
+#  include <curses.h>
+#endif
 #include <term.h>
-#endif
-
-/* Some systems set _POSIX_C_SOURCE over _POSIX_VERSION! */
-#if _POSIX_C_SOURCE >= 200112L || _POSIX_VERSION >= 200112L || _XOPEN_SOURCE >= 600
-# define LPOSIX_2001_COMPLIANT 1
-#endif
-
-#if _POSIX_C_SOURCE >= 200809L || _XOPEN_SOURCE >= 700
-# define LPOSIX_2008_COMPLIANT 1
-# ifndef LPOSIX_2001_COMPLIANT
-#   define LPOSIX_2001_COMPLIANT
-# endif
-#endif
 
 /* NetBSD's default curses implementation is not quite complete.  This
    disables those missing functions unless linked to ncurses instead. */
 #if defined NCURSES_VERSION || !defined __NetBSD__
-#  define LPOSIX_CURSES_COMPLIANT 1
+#  define LCURSES_POSIX_COMPLIANT 1
 #endif
 
 #include "lua.h"
@@ -81,46 +67,46 @@
 /* Mark unused parameters required only to match a function type
    specification. */
 #ifdef __GNUC__
-#  define LPOSIX_UNUSED(x) UNUSED_ ## x __attribute__((__unused__))
+#  define LCURSES_UNUSED(x) UNUSED_ ## x __attribute__((__unused__))
 #else
-#  define LPOSIX_UNUSED(x) UNUSED_ ## x
+#  define LCURSES_UNUSED(x) UNUSED_ ## x
 #endif
 
-/* LPOSIX_STMT_BEG/END are used to create macros that expand to a
+/* LCURSES_STMT_BEG/END are used to create macros that expand to a
    single compound statement in a portable way. */
 #if defined __GNUC__ && !defined __STRICT_ANSI__ && !defined __cplusplus
-#  define LPOSIX_STMT_BEG	(void)(
-#  define LPOSIX_STMT_END	)
+#  define LCURSES_STMT_BEG	(void)(
+#  define LCURSES_STMT_END	)
 #else
 #  if (defined sun || defined __sun__)
-#    define LPOSIX_STMT_BEG	if (1)
-#    define LPOSIX_STMT_END	else (void)0
+#    define LCURSES_STMT_BEG	if (1)
+#    define LCURSES_STMT_END	else (void)0
 #  else
-#    define LPOSIX_STMT_BEG	do
-#    define LPOSIX_STMT_END	while (0)
+#    define LCURSES_STMT_BEG	do
+#    define LCURSES_STMT_END	while (0)
 #  endif
 #endif
 
 
 /* The extra indirection to these macros is required so that if the
    arguments are themselves macros, they will get expanded too.  */
-#define LPOSIX__SPLICE(_s, _t)	_s##_t
-#define LPOSIX_SPLICE(_s, _t)	LPOSIX__SPLICE(_s, _t)
+#define LCURSES__SPLICE(_s, _t)	_s##_t
+#define LCURSES_SPLICE(_s, _t)	LCURSES__SPLICE(_s, _t)
 
-#define LPOSIX__STR(_s)		#_s
-#define LPOSIX_STR(_s)		LPOSIX__STR(_s)
+#define LCURSES__STR(_s)	#_s
+#define LCURSES_STR(_s)		LCURSES__STR(_s)
 
 /* The +1 is to step over the leading '_' that is required to prevent
    premature expansion of MENTRY arguments if we didn't add it.  */
-#define LPOSIX__STR_1(_s)	(#_s + 1)
-#define LPOSIX_STR_1(_s)	LPOSIX__STR_1(_s)
+#define LCURSES__STR_1(_s)	(#_s + 1)
+#define LCURSES_STR_1(_s)	LCURSES__STR_1(_s)
 
-#define LPOSIX_CONST(_f)	LPOSIX_STMT_BEG {			\
+#define LCURSES_CONST(_f)	LCURSES_STMT_BEG {			\
 					lua_pushinteger(L, _f);		\
 					lua_setfield(L, -2, #_f);	\
-				} LPOSIX_STMT_END
+				} LCURSES_STMT_END
 
-#define LPOSIX_FUNC(_s)		{LPOSIX_STR_1(_s), (_s)}
+#define LCURSES_FUNC(_s)	{LCURSES_STR_1(_s), (_s)}
 
 #define pushokresult(b)	pushboolresult((int) (b) == OK)
 
@@ -171,7 +157,6 @@ checklong(lua_State *L, int narg)
 }
 
 
-#if HAVE_CURSES
 static chtype
 checkch(lua_State *L, int narg)
 {
@@ -193,7 +178,6 @@ optch(lua_State *L, int narg, chtype def)
 		return checkch(L, narg);
 	return argtypeerror(L, narg, "int or char or nil");
 }
-#endif
 
 
 static int
@@ -392,36 +376,36 @@ binding_notimplemented(lua_State *L, const char *fname, const char *libname)
 }
 
 
-#define pushintegerfield(k,v) LPOSIX_STMT_BEG {				\
+#define pushintegerfield(k,v) LCURSES_STMT_BEG {			\
 	lua_pushinteger(L, (lua_Integer) v); lua_setfield(L, -2, k);	\
-} LPOSIX_STMT_END
+} LCURSES_STMT_END
 
-#define pushnumberfield(k,v) LPOSIX_STMT_BEG {				\
+#define pushnumberfield(k,v) LCURSES_STMT_BEG {				\
 	lua_pushnumber(L, (lua_Number) v); lua_setfield(L, -2, k);	\
-} LPOSIX_STMT_END
+} LCURSES_STMT_END
 
-#define pushstringfield(k,v) LPOSIX_STMT_BEG {				\
+#define pushstringfield(k,v) LCURSES_STMT_BEG {				\
 	if (v) {							\
 		lua_pushstring(L, (const char *) v);			\
 		lua_setfield(L, -2, k);					\
 	}								\
-} LPOSIX_STMT_END
+} LCURSES_STMT_END
 
-#define pushliteralfield(k,v) LPOSIX_STMT_BEG {				\
+#define pushliteralfield(k,v) LCURSES_STMT_BEG {			\
 	if (v) {							\
 		lua_pushliteral(L, v);					\
 		lua_setfield(L, -2, k);					\
 	}								\
-} LPOSIX_STMT_END
+} LCURSES_STMT_END
 
-#define settypemetatable(t) LPOSIX_STMT_BEG {				\
+#define settypemetatable(t) LCURSES_STMT_BEG {				\
 	if (luaL_newmetatable(L, t) == 1)				\
 		pushliteralfield("_type", t);				\
 	lua_setmetatable(L, -2);					\
-} LPOSIX_STMT_END
+} LCURSES_STMT_END
 
-#define setintegerfield(_p, _n) pushintegerfield(LPOSIX_STR(_n), _p->_n)
-#define setnumberfield(_p, _n) pushnumberfield(LPOSIX_STR(_n), _p->_n)
-#define setstringfield(_p, _n) pushstringfield(LPOSIX_STR(_n), _p->_n)
+#define setintegerfield(_p, _n) pushintegerfield(LCURSES_STR(_n), _p->_n)
+#define setnumberfield(_p, _n) pushnumberfield(LCURSES_STR(_n), _p->_n)
+#define setstringfield(_p, _n) pushstringfield(LCURSES_STR(_n), _p->_n)
 
-#endif /*LUAPOSIX__HELPERS_C*/
+#endif /*LCURSES__HELPERS_C*/

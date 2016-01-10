@@ -27,8 +27,8 @@
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef LUAPOSIX_STRLCPY_C
-#define LUAPOSIX_STRLCPY_C 1
+#ifndef LCURSES_STRLCPY_C
+#define LCURSES_STRLCPY_C 1
 
 #include <config.h>
 
@@ -75,4 +75,4 @@ static size_t strlcpy(char *dst, const char *src, size_t siz)
 
 #endif /* !HAVE_STRLCPY */
 
-#endif /* !LUAPOSIX_STRLCPY_C */
+#endif /* !LCURSES_STRLCPY_C */

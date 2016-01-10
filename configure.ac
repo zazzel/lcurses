@@ -24,31 +24,7 @@ AC_PROG_EGREP
 AC_PROG_SED
 
 
-## ------------------------------------------------------------------------
-## Compiler flags for POSIX 2008 or better compliance.
-## ------------------------------------------------------------------------
-
 AC_USE_SYSTEM_EXTENSIONS
-AC_CANONICAL_HOST
-case $host_os in
-  *nto*|*qnx*)
-    # QNX is only POSIX 2001, but _XOPEN_SOURCE turns off other
-    # functions luaposix can bind.
-    AC_SUBST([POSIX_EXTRA_CPPFLAGS], [-DLPOSIX_2001_COMPLIANT])
-    ;;
-
-  darwin*|openbsd*)
-    # Setting _XOPEN_SOURCE here messes up header declarations, but
-    # all functions luaposix can bind are available without it.
-    AC_SUBST([POSIX_EXTRA_CPPFLAGS], [-DLPOSIX_2008_COMPLIANT])
-    ;;
-
-  *)
-    # Enable POSIX 2008.  Please send a $host_os match if your host
-    # is not compliant.
-    AC_SUBST([POSIX_EXTRA_CPPFLAGS], [-D_XOPEN_SOURCE=700])
-    ;;
-esac
 
 ## required by automake 1.12.x, not available in 1.10.x
 m4_ifdef([AM_PROG_AR], [AM_PROG_AR])

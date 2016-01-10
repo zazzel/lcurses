@@ -118,7 +118,7 @@ Pnew_chstr(lua_State *L)
 	lua_settable(L, lua_upvalueindex(1))
 
 #define CC(s)	   CCR(#s, s)
-#define CF(i)	   CCR(LPOSIX_STR(LPOSIX_SPLICE(KEY_F, i)), KEY_F(i))
+#define CF(i)	   CCR(LCURSES_STR(LCURSES_SPLICE(KEY_F, i)), KEY_F(i))
 
 /*
 ** these values may be fixed only after initialization, so this is
@@ -642,7 +642,7 @@ Pripoffline(lua_State *L)
 	static int rip = 0;
 	int top_line = lua_toboolean(L, 1);
 
-#if LPOSIX_CURSES_COMPLIANT
+#if LCURSES_POSIX_COMPLIANT
 	if (!lua_isfunction(L, 2))
 	{
 		lua_pushliteral(L, "invalid callback passed as second parameter");
@@ -814,7 +814,7 @@ static int
 Pslk_init(lua_State *L)
 {
 	int fmt = checkint(L, 1);
-#if LPOSIX_CURSES_COMPLIANT
+#if LCURSES_POSIX_COMPLIANT
 	return pushokresult(slk_init(fmt));
 #else
 	return binding_notimplemented(L, "slk_init", "curses");
@@ -837,7 +837,7 @@ Pslk_set(lua_State *L)
 	int labnum = checkint(L, 1);
 	const char* label = luaL_checkstring(L, 2);
 	int fmt = checkint(L, 3);
-#if LPOSIX_CURSES_COMPLIANT
+#if LCURSES_POSIX_COMPLIANT
 	return pushokresult(slk_set(labnum, label, fmt));
 #else
 	return binding_notimplemented(L, "slk_set", "curses");
@@ -855,7 +855,7 @@ Refresh the soft label key area.
 static int
 Pslk_refresh(lua_State *L)
 {
-#if LPOSIX_CURSES_COMPLIANT
+#if LCURSES_POSIX_COMPLIANT
 	return pushokresult(slk_refresh());
 #else
 	return binding_notimplemented(L, "slk_refresh", "curses");
@@ -873,7 +873,7 @@ Copy the soft label key area backing screen to the virtual screen.
 static int
 Pslk_noutrefresh(lua_State *L)
 {
-#if LPOSIX_CURSES_COMPLIANT
+#if LCURSES_POSIX_COMPLIANT
 	return pushokresult(slk_noutrefresh());
 #else
 	return binding_notimplemented(L, "slk_noutrefresh", "curses");
@@ -892,7 +892,7 @@ static int
 Pslk_label(lua_State *L)
 {
 	int labnum = checkint(L, 1);
-#if LPOSIX_CURSES_COMPLIANT
+#if LCURSES_POSIX_COMPLIANT
 	return pushstringresult(slk_label(labnum));
 #else
 	return binding_notimplemented(L, "slk_label", "curses");
@@ -910,7 +910,7 @@ Clears the soft labels from the screen.
 static int
 Pslk_clear(lua_State *L)
 {
-#if LPOSIX_CURSES_COMPLIANT
+#if LCURSES_POSIX_COMPLIANT
 	return pushokresult(slk_clear());
 #else
 	return binding_notimplemented(L, "slk_clear", "curses");
@@ -928,7 +928,7 @@ Restores the soft labels to the screen.
 static int
 Pslk_restore(lua_State *L)
 {
-#if LPOSIX_CURSES_COMPLIANT
+#if LCURSES_POSIX_COMPLIANT
 	return pushokresult(slk_restore());
 #else
 	return binding_notimplemented(L, "slk_restore", "curses");
@@ -945,7 +945,7 @@ Mark the soft label key area for refresh.
 static int
 Pslk_touch(lua_State *L)
 {
-#if LPOSIX_CURSES_COMPLIANT
+#if LCURSES_POSIX_COMPLIANT
 	return pushokresult(slk_touch());
 #else
 	return binding_notimplemented(L, "slk_touch", "curses");
@@ -964,7 +964,7 @@ static int
 Pslk_attron(lua_State *L)
 {
 	chtype attrs = checkch(L, 1);
-#if LPOSIX_CURSES_COMPLIANT
+#if LCURSES_POSIX_COMPLIANT
 	return pushokresult(slk_attron(attrs));
 #else
 	return binding_notimplemented(L, "slk_attron", "curses");
@@ -983,7 +983,7 @@ static int
 Pslk_attroff(lua_State *L)
 {
 	chtype attrs = checkch(L, 1);
-#if LPOSIX_CURSES_COMPLIANT
+#if LCURSES_POSIX_COMPLIANT
 	return pushokresult(slk_attroff(attrs));
 #else
 	return binding_notimplemented(L, "slk_attroff", "curses");
@@ -1002,7 +1002,7 @@ static int
 Pslk_attrset(lua_State *L)
 {
 	chtype attrs = checkch(L, 1);
-#if LPOSIX_CURSES_COMPLIANT
+#if LCURSES_POSIX_COMPLIANT
 	return pushokresult(slk_attrset(attrs));
 #else
 	return binding_notimplemented(L, "slk_attrset", "curses");
@@ -1266,61 +1266,61 @@ Ptigetstr (lua_State *L)
 static const luaL_Reg curseslib[] =
 {
 #if HAVE_CURSES
-	LPOSIX_FUNC( Pbaudrate		),
-	LPOSIX_FUNC( Pbeep		),
-	LPOSIX_FUNC( Pcbreak		),
-	LPOSIX_FUNC( Pcolor_pair	),
-	LPOSIX_FUNC( Pcolor_pairs	),
-	LPOSIX_FUNC( Pcolors		),
-	LPOSIX_FUNC( Pcols		),
-	LPOSIX_FUNC( Pcurs_set		),
-	LPOSIX_FUNC( Pdelay_output	),
-	LPOSIX_FUNC( Pdoupdate		),
-	LPOSIX_FUNC( Pecho		),
-	LPOSIX_FUNC( Pendwin		),
-	LPOSIX_FUNC( Perasechar		),
-	LPOSIX_FUNC( Pflash		),
-	LPOSIX_FUNC( Pflushinp		),
-	LPOSIX_FUNC( Phalfdelay		),
-	LPOSIX_FUNC( Phas_colors	),
-	LPOSIX_FUNC( Phas_ic		),
-	LPOSIX_FUNC( Phas_il		),
-	LPOSIX_FUNC( Pinit_pair		),
-	LPOSIX_FUNC( Pisendwin		),
-	LPOSIX_FUNC( Pkeyname		),
-	LPOSIX_FUNC( Pkillchar		),
-	LPOSIX_FUNC( Plines		),
-	LPOSIX_FUNC( Plongname		),
-	LPOSIX_FUNC( Pnapms		),
-	LPOSIX_FUNC( Pnew_chstr		),
-	LPOSIX_FUNC( Pnewpad		),
-	LPOSIX_FUNC( Pnewwin		),
-	LPOSIX_FUNC( Pnl		),
-	LPOSIX_FUNC( Ppair_content	),
-	LPOSIX_FUNC( Praw		),
-	LPOSIX_FUNC( Presizeterm	),
-	LPOSIX_FUNC( Pripoffline	),
-	LPOSIX_FUNC( Pslk_attroff	),
-	LPOSIX_FUNC( Pslk_attron	),
-	LPOSIX_FUNC( Pslk_attrset	),
-	LPOSIX_FUNC( Pslk_clear		),
-	LPOSIX_FUNC( Pslk_init		),
-	LPOSIX_FUNC( Pslk_label		),
-	LPOSIX_FUNC( Pslk_noutrefresh	),
-	LPOSIX_FUNC( Pslk_refresh	),
-	LPOSIX_FUNC( Pslk_restore	),
-	LPOSIX_FUNC( Pslk_set		),
-	LPOSIX_FUNC( Pslk_touch		),
-	LPOSIX_FUNC( Pstart_color	),
-	LPOSIX_FUNC( Pstdscr		),
-	LPOSIX_FUNC( Ptermattrs		),
-	LPOSIX_FUNC( Ptermname		),
-	LPOSIX_FUNC( Ptigetflag		),
-	LPOSIX_FUNC( Ptigetnum		),
-	LPOSIX_FUNC( Ptigetstr		),
-	LPOSIX_FUNC( Punctrl		),
-	LPOSIX_FUNC( Pungetch		),
-	LPOSIX_FUNC( Puse_default_colors),
+	LCURSES_FUNC( Pbaudrate		),
+	LCURSES_FUNC( Pbeep		),
+	LCURSES_FUNC( Pcbreak		),
+	LCURSES_FUNC( Pcolor_pair	),
+	LCURSES_FUNC( Pcolor_pairs	),
+	LCURSES_FUNC( Pcolors		),
+	LCURSES_FUNC( Pcols		),
+	LCURSES_FUNC( Pcurs_set		),
+	LCURSES_FUNC( Pdelay_output	),
+	LCURSES_FUNC( Pdoupdate		),
+	LCURSES_FUNC( Pecho		),
+	LCURSES_FUNC( Pendwin		),
+	LCURSES_FUNC( Perasechar	),
+	LCURSES_FUNC( Pflash		),
+	LCURSES_FUNC( Pflushinp		),
+	LCURSES_FUNC( Phalfdelay	),
+	LCURSES_FUNC( Phas_colors	),
+	LCURSES_FUNC( Phas_ic		),
+	LCURSES_FUNC( Phas_il		),
+	LCURSES_FUNC( Pinit_pair	),
+	LCURSES_FUNC( Pisendwin		),
+	LCURSES_FUNC( Pkeyname		),
+	LCURSES_FUNC( Pkillchar		),
+	LCURSES_FUNC( Plines		),
+	LCURSES_FUNC( Plongname		),
+	LCURSES_FUNC( Pnapms		),
+	LCURSES_FUNC( Pnew_chstr	),
+	LCURSES_FUNC( Pnewpad		),
+	LCURSES_FUNC( Pnewwin		),
+	LCURSES_FUNC( Pnl		),
+	LCURSES_FUNC( Ppair_content	),
+	LCURSES_FUNC( Praw		),
+	LCURSES_FUNC( Presizeterm	),
+	LCURSES_FUNC( Pripoffline	),
+	LCURSES_FUNC( Pslk_attroff	),
+	LCURSES_FUNC( Pslk_attron	),
+	LCURSES_FUNC( Pslk_attrset	),
+	LCURSES_FUNC( Pslk_clear	),
+	LCURSES_FUNC( Pslk_init		),
+	LCURSES_FUNC( Pslk_label	),
+	LCURSES_FUNC( Pslk_noutrefresh	),
+	LCURSES_FUNC( Pslk_refresh	),
+	LCURSES_FUNC( Pslk_restore	),
+	LCURSES_FUNC( Pslk_set		),
+	LCURSES_FUNC( Pslk_touch	),
+	LCURSES_FUNC( Pstart_color	),
+	LCURSES_FUNC( Pstdscr		),
+	LCURSES_FUNC( Ptermattrs	),
+	LCURSES_FUNC( Ptermname		),
+	LCURSES_FUNC( Ptigetflag	),
+	LCURSES_FUNC( Ptigetnum		),
+	LCURSES_FUNC( Ptigetstr		),
+	LCURSES_FUNC( Punctrl		),
+	LCURSES_FUNC( Pungetch		),
+	LCURSES_FUNC( Puse_default_colors),
 #endif
 	{NULL, NULL}
 };
