@@ -1,5 +1,8 @@
 # lcurses NEWS - User visible changes
 
+## Noteworthy changes in release ?.? (????-??-??) [?]
+
+
 ## Noteworthy changes in release 9.0.0 (2016-01-10) [stable]
 
   - This is the first standalone release since lcurses was absorbed into
