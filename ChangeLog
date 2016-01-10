@@ -1,0 +1,241 @@
+2016-01-10  JJ Andresson  <jjandresson@gmail.com>
+
+	Release version 9.0.0
+	* NEWS.md: Record release date.
+
+	maint: manage sanity checks.
+	* build-aux/sanity-cfg.mk: New file.
+
+	maint: add a .prev-version file for release rules.
+	* .prev-version: New file.
+
+	irockspec:update rockspecs.
+	* rockspec.conf (description.detailed): A better description based
+	on current lcurses page at luarocks.org.
+	* lcurses-git-1.rockspec: Regenerate.
+
+2016-01-10  Gary V. Vaughan  <gary@gnu.org>
+
+	slingshot: update to latest revision.
+	* slingshot: Pull latest upstream, to prevent spurious regeneration
+	of slingshot/bootstrap.
+	* bootstrap: Regenerate with up to date copyright header.
+
+2016-01-10  JJ Andresson  <jjandresson@gmail.com>
+
+	maint: bump version number to 9.0.0.
+	* configure.ac (AC_INIT): Bump version number to 9.0.0.
+	* .travis.yml: Regenerate.
+
+	configury: use LCURSES prefix for configured defines.
+	* configure.ac (AC_CANONICAL_HOST): Remove unused call and setting
+	of unused POSIX_20XX_COMPLIANT macros.
+	* ext/include/strlcpy.c (LPOSIX_STRLCPY_C): Rename from this...
+	(LCURSES_STRLCPY_C): ...to this.
+	* ext/curses.c, ext/curses/chstr.c, ext/curses/window.c,
+	ext/include/_helpers.c (HAVE_CURSES): Remove define guards - this
+	package is useless without a curses library to link against!
+	* ext/include/_helpers.c: Rename LPOSIX_ prefixed macros with
+	LCURSES_ prefix.
+	* ext/curses.c, ext/curses/chstr.c, ext/curses/window.c: Adjust
+	accordingly.
+
+	configury: don't depend on gnulib.
+	* .gitmodules (gnulib): Remove.
+	* bootstrap.conf: Remove gnulib configury.
+	* configure.ac (gcc-warnings, gl_EARLY, gl_INIT): Remove.
+	* gnulib: Remove module.
+
+	maint: many small fixes in configury and documentation.
+
+2015-07-05  JJ Andresson  <jjandresson@gmail.com>
+
+	maint: merge back luaposix curses improvements.
+
+2011-09-09  Reuben Thomas  <rrt@sc3d.org>
+
+	Note merging into luaposix.
+
+	Makefile.am: Get package name from build system when running woger.
+
+2011-09-08  Reuben Thomas  <rrt@sc3d.org>
+
+	Merge branch 'master' of github.com:rrthomas/lcurses
+
+	Merge pull request #3 from gvvaughan/pull-request/dont-discard-const-qualifier-at-tigetfoo
+	Pull request/dont discard const qualifier at tigetfoo
+
+2011-09-08  Gary V. Vaughan  <gary@vaughan.pe>
+
+	compiler-warning: fix 'discards qualifiers from pointer' gcc  warning
+	Simply throwing a `const char *` pointer into a plain `char *` type
+	parameter breaks the contract between curses function prototypes in the
+	API and the caller.
+
+	Without any additional compiler flags, before this changeset (and after
+	the last reverted changeset has been applied), compilation with gcc
+	yields:
+
+	  lcurses.c: In function 'ti_getflag':
+	  lcurses.c:1838: warning: passing argument 1 of 'tigetflag' discards qualifiers from pointer target type
+	  lcurses.c: In function 'ti_getnum':
+	  lcurses.c:1849: warning: passing argument 1 of 'tigetnum' discards qualifiers from pointer target type
+	  lcurses.c: In function 'ti_getstr':
+	  lcurses.c:1862: warning: passing argument 1 of 'tigetstr' discards qualifiers from pointer target type
+
+	When using `-Werror`, as added by `./configure --enable-gcc-warnings`,
+	this correctly prevents compilation succeeding.  Instead, we use
+	`strlcpy` to make a copy that can be safely mangled inside curses
+	functions (and to save memory, we use a single static buffer for all the
+	`tigetfoo` wrapper calls.
+
+2011-09-08  Gary V. Vaughan  <gary@vaughan.pe>
+
+	Revert "Avoid using strlcpy, a non-standard function."
+	This reverts commit a6e1585de2c1d5668393b539ab187d18b02ad1f1.
+
+	Revert "Cast capname arguments to avoid compiler warnings."
+	This reverts commit 1f4531f145bf4d8de7fb011d1c7cdb7bb12da0df.
+
+2011-09-07  Reuben Thomas  <rrt@sc3d.org>
+
+	Fix license (should be the same as the rest of lcurses).
+
+	Remove fixed FIXME.
+
+	Merge pull request #2 from gvvaughan/pull-request/portable-shared-lib-extension
+	test: ask libtool for objdir and shrext
+
+	Cast capname arguments to avoid compiler warnings.
+
+2011-09-07  Gary V. Vaughan  <gary@vaughan.pe>
+
+	test: ask libtool for objdir and shrext
+	...rather than hardcoding `.libs` and `.so` respectively.
+
+2011-09-06  Reuben Thomas  <rrt@sc3d.org>
+
+	Add Lua curses.lua module to provide some extra convenience functions (from Peter Billam).
+
+	Bump version to 8.
+
+	Add rough cut of utility functions from Peter Billam.
+
+	Add rough cut of documentation from Peter Billam.
+
+	Add test script missing from previous commit.
+
+	Add a test that loads the built curses module.
+
+	Avoid using strlcpy, a non-standard function.
+
+	Fix typo (wrong variable name).
+
+	Bump version to 7.
+
+	Add rule to build ChangeLog.
+
+	Fix reference to versions of GNU Zile which are written in Lua.
+
+2011-09-05  Reuben Thomas  <rrt@sc3d.org>
+
+	Update ax_lua.m4.
+
+2011-09-03  Reuben Thomas  <rrt@sc3d.org>
+
+	Merge pull request #1 from gvvaughan/master
+	Make lcurses build and load correctly on vanilla Mac OS 10.6
+
+2011-09-01  Gary V. Vaughan  <gary@vaughan.pe>
+
+	hygiene: fix warnings from gl_ADD_WARN flags
+
+	configury: pass gl_WARN_ADD results to gcc
+	gl_WARN_ADD results were not being substituted into Makefile.in
+	correctly. Add a --enable-gcc-warnings configure flag, and when
+	passed, compile with all the warning flags that were successfully
+	tested at configure time.
+
+	configury: invoke missing gl_INIT macro
+	gnulib doesn't work properly unless configure invokes both of gl_INIT
+	and gl_EARLY.
+
+	configury: upgrade broken autogen.sh to bootstrap
+	manage gnulib submodule, bootstrapped gnulib files, and other assorted
+	improvements from adopting bootstrap script (slated for gnulib
+	adoption).
+
+	Revert "[configury] Autoconf version 2.61 compatibility"
+	This reverts commit ef4c0fc966978f5fb9abea35203ae4f1fd0b205e.
+
+	wrap tigetflag, tigetnum and tigetstr calls
+
+	Merge remote-tracking branch 'upstream/master'
+
+2011-08-16  Reuben Thomas  <rrt@sc3d.org>
+
+	Correct example configure line for Debian/Ubuntu; thanks to Peter Billam.
+
+2011-07-01  Reuben Thomas  <rrt@sc3d.org>
+
+	Update release target to code taken from stdlib.
+
+	Update woger call for latest woger.
+
+	Bump version to 6.
+
+	Use newer ax_lua.m4 for building with LuaJIT.
+
+2011-04-03  Gary V. Vaughan  <gary@gnu.org>
+
+	Revert "[Configury] Search for and link against liblua."
+	It turns out that there is no need to link the modules against
+	the liblua dylib to avoid crashiness, and doing so prevents using
+	an alternative runtime (luajit), so reverted this patch.
+
+	This reverts commit 87e20e11afb53fa3910fa092a16620a7549260ad.
+
+2011-04-02  Gary V. Vaughan  <gary@gnu.org>
+
+	[Configury] Search for and link against liblua.
+	I've discovered that the best way to avoid crashiness when running
+	Lua on Mac OS 10.6 with runtime binary modules is to build lua itself
+	with a liblua.dylib, and then link the lua interpreter and all the
+	modules slavishly against that same dylib. This patch makes sure
+	lcurses behaves accordingly.
+
+	[configury] Autoconf version 2.61 compatibility
+	Mac OS 10.6.7 still ships with Autoconf-2.61, which is prior to
+	bug-fixes relied on by the warnings and manywarnings gnulib
+	modules.  This patch allows bootstrapping a fresh clone of the
+	repo without first installing the latest autoconf.
+
+	[configury] Support Automake versions < 1.11
+	Mac OS 10.6.7 still ships with Automake-1.10, which doesn't support
+	the AM_SILENT_RULES macro.  This patch allows bootstrapping a fresh
+	clone of the repo without first installing the latest automake.
+
+2011-03-29  Reuben Thomas  <rrt@sc3d.org>
+
+	Don’t imply it’s written by Reuben Thomas.
+
+2011-03-28  Reuben Thomas  <rrt@sc3d.org>
+
+	Tweak short project description.
+
+	Update git push command.
+
+	Update.
+
+2011-03-28  Reuben Thomas  <rrt@sc3d.org>
+
+	Update build system: use more modern macros, and some gnulib stuff.
+	Use gnulib.
+
+	Make library link against curses as it should.
+
+	Bump to release 5.
+
+2011-03-28  Reuben Thomas  <rrt@sc3d.org>
+
+	Initial checkin: release 4.
