@@ -13,8 +13,7 @@ lcurses is a curses binding for [Lua] 5.1, 5.2 and 5.3 (including LuaJIT).
 lcurses is released under the MIT license, like Lua (see [COPYING];
 it's basically the same as the BSD license). There is no warranty.
 
-Unfortunately, there's currently no documentation other than
-lcurses.c. It's fairly straightforward, though.
+Documentation is generated via [LDoc] and is available at: http://lcurses.github.io/lcurses/
 
 Please report bugs and make suggestions by opening an issue on the
 github tracker.
