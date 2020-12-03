@@ -22,7 +22,6 @@ env:
     - VLUA="lua=5.1"
     - VLUA="luajit=2.1"
     - VLUA="luajit=2.0"
-    
   jobs:
     exclude:
         - arch: ppc64le
